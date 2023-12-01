@@ -1,8 +1,9 @@
 import pickle
 from typing import List
 
+from fastapi import FastAPI, UploadFile, File
+from typing import List
 import pandas as pd
-from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
 
@@ -69,7 +70,7 @@ async def predict_item(item: Item):
     input_df_encoded = encoder.transform(input_df[['fuel', 'seller_type', 'transmission', 'owner']])
     input_features = pd.concat([input_df_encoded, input_df[['year', 'selling_price', 'km_driven', 'seats']]], axis=1)
     prediction = model.predict(input_features)
-    return {"prediction": prediction[0]}
+    return {"prediction": prediction}
 
 
 @app.post("/predict_items")
@@ -79,3 +80,13 @@ async def predict_items(items: Items):
         prediction = predict_item(item)
         predictions.append(prediction)
     return {"predictions": predictions}
+
+
+@app.post("/predict_items_with_file")
+async def predict_items(file: UploadFile = File(...)) -> List[float]:
+    contents = await file.read()
+    input_df = pd.read_csv(contents)
+    input_df_encoded = encoder.transform(input_df[['fuel', 'seller_type', 'transmission', 'owner']])
+    input_features = pd.concat([input_df_encoded, input_df[['year', 'selling_price', 'km_driven', 'seats']]], axis=1)
+    prediction = model.predict(input_features)
+    return {"prediction": prediction}
