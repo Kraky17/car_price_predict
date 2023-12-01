@@ -4,8 +4,8 @@ from typing import List
 import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.responses import FileResponse
 
-app = FastAPI()
 
 with open('model.pkl', 'rb') as file:
     model = pickle.load(file)
@@ -33,6 +33,12 @@ class Item(BaseModel):
 
 class Items(BaseModel):
     objects: List[Item]
+
+
+@app.get("/favicon.ico")
+async def get_favicon():
+    return FileResponse("path_to_your_favicon.ico")
+app = FastAPI()
 
 
 @app.get("/")
