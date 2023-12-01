@@ -86,6 +86,7 @@ async def predict_items(items: Items):
 async def predict_items(file: UploadFile = File(...)) -> List[float]:
     contents = await file.read()
     input_df = pd.read_csv(contents)
+    df.columns = ['name	year','selling_price','km_driven','fuel','seller_type',	'transmission',	'owner','mileage','engine',	'max_power','seats']
     input_df_encoded = encoder.transform(input_df[['fuel', 'seller_type', 'transmission', 'owner']])
     input_features = pd.concat([input_df_encoded, input_df[['year', 'selling_price', 'km_driven', 'seats']]], axis=1)
     prediction = model.predict(input_features)
