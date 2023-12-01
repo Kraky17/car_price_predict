@@ -35,10 +35,12 @@ class Items(BaseModel):
     objects: List[Item]
 
 
+app = FastAPI()
+
+
 @app.get("/favicon.ico")
 async def get_favicon():
     return FileResponse("path_to_your_favicon.ico")
-app = FastAPI()
 
 
 @app.get("/")
