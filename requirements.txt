@@ -38,3 +38,4 @@ watchfiles==0.21.0
 websockets==12.0
 fastapi.responses
 scikit-learn~=1.3.2
+typing
